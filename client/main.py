@@ -1,5 +1,4 @@
 import sys
-import threading
 from chatview import ChatView
 from tkinter import Tk
 
@@ -7,14 +6,16 @@ from tkinter import Tk
 HEADER_LENGTH = 10
 IP = "127.0.0.1"
 PORT = 1234
-ADDRESS = (IP, PORT)
+HOST = (IP, PORT)
 
 # View Configuration
 WIDTH = 200
 HEIGHT = 300
 
 def get_ip_and_port():
-    global IP, PORT, ADDRESS
+    """Gets IP and/or Port given by the user, if the user doesn't give anything, then default values remain.
+    """
+    global IP, PORT, HOST
     args = sys.argv[1:]
     if args:
         print(args)
@@ -22,15 +23,17 @@ def get_ip_and_port():
         if len(args) == 2:
             IP = str(args[0])
             PORT = int(args[1])
-        ADDRESS = (IP, PORT)
+        HOST = (IP, PORT)
 
 def main():
+    """ Runs the application.
+    """
     root = Tk()
     root.title("Chatroom C&L")
     root.config(width=WIDTH, height=HEIGHT)
     get_ip_and_port()
-    print(ADDRESS)
-    chat_view = ChatView(root, address=ADDRESS, headlen=HEADER_LENGTH)
+    print(HOST)
+    chat_view = ChatView(root, host=HOST, headlen=HEADER_LENGTH)
     chat_view.initialize()
     root.mainloop()
     chat_view.stop()
