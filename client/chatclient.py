@@ -40,7 +40,7 @@ class ChatClient:
             self._socket.send(message_header + message)
 
     def receive_username(self):
-        """Receive the username of sended by the server.
+        """Receive the username sended by the server.
 
         Returns:
             username (str): received username.
@@ -54,10 +54,10 @@ class ChatClient:
         return username
 
     def receive_message(self):
-        """Receive the username of sended by the server.
+        """Receive the message sended by the server.
 
         Returns:
-            username (str): received username.
+            username (str): received message.
         """
         message_header = self._socket.recv(self._header_length)
         message_length = int(message_header.decode('utf-8'))
