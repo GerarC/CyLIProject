@@ -1,5 +1,8 @@
 # CyLIProject
 
+#To Do
+- [ ] Split the images with krita
+
 ## ¿Qué es esto?
 Este es un proyecto para la materia de Comunicaciones y Laboratorio I de la Universidad de antioquia.
 centrado en el tema de programación con sockets TCP o UPD.
