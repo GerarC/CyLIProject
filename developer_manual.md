@@ -1,5 +1,4 @@
-# Cómo se hizo
-
+# **Manual del Desarrollador** - ¿Cómo se hizo?
 ## Server
 
 ### Base del servidor
@@ -44,6 +43,35 @@ Para que a todos los clientes se les envíe la información se recorre la lista 
 ### Todo Junto, En un Bucle
 ![Bucle](images/Server9.png)
 
-Para que todo esto funcione se instancia un objeto de la Clase `Chatroom` especificándole el tamaño del header, la dirección IP y el puerto en donde escuchará, se pone a escuchar y en un bucle se van chequeando qué sockets están bien y cuales están mal con `chatroom.check_sockets()`, los que están mal se eliminan de los sockets conocidos y de los clientes, a los que si están bien, incluyendo el servidor, se los itera. Cada vez que se tenga el socket del servidor se aceptarán nuevas opciones con `chatrrom.newconnection`. A los clientes se leen los mensajes que hayan enviados y luego se esparce esa información al resto de clientes con el método `chatroom.broad_message`.
+Para que todo esto funcione se instancia un objeto de la Clase `Chatroom` especificándole el tamaño del header, la dirección IP y el puerto en donde escuchará, se pone a escuchar y en un bucle se van chequeando qué sockets están bien y cuales están mal con `chatroom.check_sockets()`, los que están mal se eliminan de los sockets conocidos y de los clientes, a los que si están bien, incluyendo el servidor, se los itera. Cada vez que se tenga el socket del servidor se aceptarán nuevas opciones con `chatroom.newconnection`. A los clientes se leen los mensajes que hayan enviados y luego se esparce esa información al resto de clientes con el método `chatroom.broad_message`.
 
 ## Cliente
+
+###  Base del cliente
+Para el manejar el cliente se creó una clase llamada **ChatClient** que tiene como atributos el tamaño del header (El mismo que el del servidor), el nombre de usuario, el header del nombre del usuario, el host (una tupla con la dirección IP y el Puerto donde escucha el servidor), y el socket que se conecta al servidor que es de tipo TCP y tabaja con IPv4.
+![Cliente](images/Client1.png)
+
+El método que conecta al socket con el servidor, evita que el socket se bloquee y envía el usuario para que el servidor lo guarde en el diccionario de clientes.
+![Set it up](images/Client2.png)
+
+### Mandar Mensajes
+Para mandar mensajes solo se codifica el mensaje, se crea su header (Con el tamaño del mensaje) y luego se mandan juntos con el método `send` del socket.
+![Send it](images/Client3.png)
+
+### Recibir Mensajes
+Estos dos métodos hace casi lo mismo, uno recibe el header del nombre del usuario, si no existe entonces es que se cerró la sesión desde el servidor. Si lo recibe entonce retorna el string resultante de decodificarlo.
+
+Por parte de `receive_message` no se verifica si hay o no hay conexión porque se supone que ya debió de llegar alguna información (el nombre de usuario).
+![Receive it](images/Client4.png)
+
+### Vista del cliente
+Aquí lo único importante a resaltar es que se instancia un objeto de tipo `ChatClient`.
+![chatview](images/Client5.png)
+
+### Bucle Principal
+Este es el bucle principal, acá se recibe los mensajes y se insertan en el Text de la vista. Las excepciones tienen que ver de la parte de `IOError` tienen que ver con la opción de `setblocking` que configuramos antes `EAGAIN` viene a ser inténtalo más tarde y `EWOULDBLOCK` significa que podría bloquear la aplicación.
+![loop](images/Client8.png)
+
+### Inicialización de la vista
+En el método initialize de la vista, se conecta el cliente con le servidor y se crea un atributo loop el cual es un Hilo con el bucle de `_reload`, esto es para que no congele la aplicación mientras busca mensajes.
+![initialize](images/Client6.png)
